@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>UU x Svenska Spel</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="shortcut icon" href="../../imges/fotboll.png" type="image/png" />
+    <!--<script src="./assets/js/javaSqript.js" type="module"></script>-->
+  </head>
+
+  <body>
+    <!-- Mall för "checkmarks"
+		<span class="checkmark">
+			<div class="stem"></div>
+			<div class="kick"></div>
+		</span> 
+		<img id="fotball" src="assets/imges/fotboll.png">
+	-->
+    <div class="followScroll">
+      <nav class="navTop">
+        <ul>
+          <li><a href="#">Ombud & Partners</a></li>
+          <li><a href="#">Utbildingar</a></li>
+          <li><a href="#">Blogg</a></li>
+          <li><a href="#">Kontakt</a></li>
+        </ul>
+      </nav>
+      <img class="imgSvSNav" src="../../imges/SvSLogo.png" />
+      <nav class="navMid">
+        <ul>
+          <li><a href="../../../index.html">Startsida</a></li>
+          <li><a href="../Unity/index.html">Unity</a></li>
+          <li><a href="../Babylon/index.html">Babylon.js</a></li>
+          <li id="active"><a href="./index.html">Three.js</a></li>
+          <li>
+            <a href="#"><img class="imgNav" src="../../imges/ukFlag.png" /></a>
+          </li>
+          <li>
+            <a href="#"
+              ><img class="imgNavSI" src="../../imges/search-icon.png"
+            /></a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <header></header>
+
+    <main id="gameThree">
+      <canvas id="bg"></canvas>
+      <div id="threejs">
+        <p id="ballCount">Ball count: 1</p>
+        <input id="spawnOneBall" type="button" value="1 Ball" />
+        <input id="spawn50Ball" type="button" value="50 Balls" />
+        <input id="spawnIMGBall" type="button" value="1 IMG" />
+        <input id="spawn50IMGBall" type="button" value="50 IMGs" />
+        <input id="checkIfOutside" type="button" value="Delete out of bounds" />
+        <input id="sunLight" type="button" value="Turn on Sunlight" />
+      </div>
+    </main>
+
+    <footer class="text-center">
+      <nav class="navBot">
+        <ul>
+          <li><a href="#">Om oss</a></li>
+          <li><a href="#">Kontakta oss</a></li>
+        </ul>
+      </nav>
+      <p>
+        ©Copyright 2022 <br />
+        Oscar Ahlgren och Filip Åberg
+      </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/gh/kripken/ammo.js@HEAD/builds/ammo.wasm.js"></script>
+    <script src="game2.js" type="module"></script>
+  </body>
+</html>
