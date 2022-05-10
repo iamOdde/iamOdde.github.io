@@ -19,7 +19,7 @@ let clock = new THREE.Clock();
 
 const mapWidth = 60,
   mapDepth = 4,
-  mapHeight = 100,
+  mapHeight = 130,
   BODY_RESTITUTION = 0.9;
 
 var theImages = new Array();
@@ -300,7 +300,7 @@ function createCylinder(pos = { x: 0, y: 0, z: 0 }) {
 function createBall() {
   let pos = {
     x: Math.random() * (3 - -3 + 1) + -3,
-    y: Math.random() * (88 - 70 + 1) + 70,
+    y: Math.random() * (120 - 105 + 1) + 105,
     z: 0,
   };
   let radius = 1.2;
@@ -355,7 +355,7 @@ function createBall() {
 function createIMGBall() {
   let pos = {
     x: Math.random() * (3 - -3 + 1) + -3,
-    y: Math.random() * (88 - 70 + 1) + 70,
+    y: Math.random() * (120 - 105 + 1) + 105,
     z: 0,
   };
   let radius = 1.2;
@@ -437,6 +437,7 @@ function checkIfOutside() {
       rigidBodies[j].geometry.dispose();
       rigidBodies[j].material.dispose();
       scene.remove(rigidBodies[j]);
+      rigidBodies.splice(j, 1);
       ballCount = ballCount - 1;
     }
   }
