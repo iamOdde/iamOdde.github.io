@@ -17,17 +17,20 @@ let ballCount = 0,
 
 let clock = new THREE.Clock();
 
+const EARTH_GRAVITY = -9.807;
+
 const mapWidth = 60,
   mapDepth = 4,
-  mapHeight = 130,
+  mapHeight = 100,
   BODY_RESTITUTION = 0.9;
 
-var theImages = new Array();
-theImages[0] = "../../imges/boysen/filip.PNG";
-theImages[1] = "../../imges/boysen/oscar.jpeg";
-theImages[2] = "../../imges/boysen/herman.PNG";
-theImages[3] = "../../imges/boysen/matsboge.PNG";
-theImages[4] = "../../imges/boysen/timmy.PNG";
+var theImages = [
+  "../../imges/boysen/filip.PNG",
+  "../../imges/boysen/oscar.jpeg",
+  "../../imges/boysen/herman.PNG",
+  "../../imges/boysen/matsboge.PNG",
+  "../../imges/boysen/timmy.PNG",
+];
 
 //Ammojs Initialization
 Ammo().then(start);
@@ -129,7 +132,7 @@ function start() {
 
   createBall();
 
-  animate();
+  requestAnimationFrame(animate);
 }
 
 function setupPhysicsWorld() {
@@ -144,7 +147,7 @@ function setupPhysicsWorld() {
     solver,
     collisionConfiguration
   );
-  physicsWorld.setGravity(new Ammo.btVector3(0, -9.81, 0));
+  physicsWorld.setGravity(new Ammo.btVector3(0, EARTH_GRAVITY, 0));
 }
 
 function setupGraphics() {
@@ -164,7 +167,7 @@ function setupGraphics() {
   renderer.setClearColor(0xff0000, 1);
 
   camera.position.setZ(30);
-  camera.position.setY(30);
+  //camera.position.setY(30);
 
   pointerLight = new THREE.PointLight(0xffffff);
   pointerLight.intensity = 0;
@@ -177,8 +180,6 @@ function setupGraphics() {
 }
 
 function animate() {
-  requestAnimationFrame(animate);
-
   let deltaTime = clock.getDelta();
 
   updatePhysics(deltaTime);
@@ -190,6 +191,8 @@ function animate() {
   pointerLight.position.z = 200 * Math.sin(t) + 0;
 
   renderer.render(scene, camera);
+
+  requestAnimationFrame(animate);
 }
 
 function createBlock(
@@ -199,7 +202,7 @@ function createBlock(
   opacity1 = 1,
   trans = false
 ) {
-  let quat = { x: 0, y: 0, z: 0, w: 1 };
+  let quaternion = { x: 0, y: 0, z: 0, w: 1 };
   let mass = 0;
 
   //threeJS Section
@@ -224,7 +227,14 @@ function createBlock(
   let transform = new Ammo.btTransform();
   transform.setIdentity();
   transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-  transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+  transform.setRotation(
+    new Ammo.btQuaternion(
+      quaternion.x,
+      quaternion.y,
+      quaternion.z,
+      quaternion.w
+    )
+  );
   let motionState = new Ammo.btDefaultMotionState(transform);
 
   let colShape = new Ammo.btBoxShape(
@@ -249,7 +259,7 @@ function createBlock(
 
 function createCylinder(pos = { x: 0, y: 0, z: 0 }) {
   let scale = { x: 1.1, y: mapDepth, z: 1.1 };
-  let quat = { x: Math.PI / 2, y: 0, z: 0, w: 1 };
+  let quaternion = { x: Math.PI / 2, y: 0, z: 0, w: 1 };
   let mass = 0;
 
   //threeJS Section
@@ -261,7 +271,7 @@ function createCylinder(pos = { x: 0, y: 0, z: 0 }) {
   );
 
   CylinderPlane.position.set(pos.x, pos.y, pos.z);
-  CylinderPlane.rotation.x = quat.x;
+  CylinderPlane.rotation.x = quaternion.x;
   //CylinderPlane.rotation.set(new THREE.Vector3(quat.x, quat.y, quat.z));
   CylinderPlane.scale.set(scale.x, scale.y, scale.z);
 
@@ -274,7 +284,14 @@ function createCylinder(pos = { x: 0, y: 0, z: 0 }) {
   let transform = new Ammo.btTransform();
   transform.setIdentity();
   transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-  transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+  transform.setRotation(
+    new Ammo.btQuaternion(
+      quaternion.x,
+      quaternion.y,
+      quaternion.z,
+      quaternion.w
+    )
+  );
   let motionState = new Ammo.btDefaultMotionState(transform);
 
   let colShape = new Ammo.btCylinderShape(
@@ -297,23 +314,38 @@ function createCylinder(pos = { x: 0, y: 0, z: 0 }) {
   physicsWorld.addRigidBody(body);
 }
 
-function createBall() {
+function createBall(whatMesh) {
   let pos = {
     x: Math.random() * (3 - -3 + 1) + -3,
-    y: Math.random() * (120 - 105 + 1) + 105,
+    y: Math.random() * (88 - 70 + 1) + 70,
     z: 0,
   };
   let radius = 1.2;
-  let quat = { x: 0, y: 0, z: 0, w: 1 };
+  let quaternion = { x: 0, y: 0, z: 0, w: 1 };
   let mass = 1;
 
+  let ball;
+
   //threeJS Section
-  let ball = new THREE.Mesh(
-    new THREE.SphereBufferGeometry(radius),
-    new THREE.MeshPhongMaterial({
-      color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-    })
-  );
+  if (whatMesh != "textured") {
+    ball = new THREE.Mesh(
+      new THREE.SphereBufferGeometry(radius),
+      new THREE.MeshPhongMaterial({
+        color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      })
+    );
+  } else {
+    const texture = new THREE.TextureLoader().load(
+      theImages[Math.floor(Math.random() * 5)]
+    );
+
+    ball = new THREE.Mesh(
+      new THREE.SphereBufferGeometry(radius),
+      new THREE.MeshBasicMaterial({
+        map: texture,
+      })
+    );
+  }
 
   ball.position.set(pos.x, pos.y, pos.z);
 
@@ -326,66 +358,14 @@ function createBall() {
   let transform = new Ammo.btTransform();
   transform.setIdentity();
   transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-  transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
-  let motionState = new Ammo.btDefaultMotionState(transform);
-
-  let colShape = new Ammo.btSphereShape(radius);
-  colShape.setMargin(0.05);
-
-  let localInertia = new Ammo.btVector3(0, 0, 0);
-  colShape.calculateLocalInertia(mass, localInertia);
-  let rbInfo = new Ammo.btRigidBodyConstructionInfo(
-    mass,
-    motionState,
-    colShape,
-    localInertia
+  transform.setRotation(
+    new Ammo.btQuaternion(
+      quaternion.x,
+      quaternion.y,
+      quaternion.z,
+      quaternion.w
+    )
   );
-  let body = new Ammo.btRigidBody(rbInfo);
-  physicsWorld.addRigidBody(body);
-
-  ball.userData.physicsBody = body;
-  body.setRestitution(BODY_RESTITUTION);
-  rigidBodies.push(ball);
-
-  ballCount++;
-  document.getElementById("ballCount").innerHTML =
-    "Ball Count: " + ballCount.toString();
-}
-
-function createIMGBall() {
-  let pos = {
-    x: Math.random() * (3 - -3 + 1) + -3,
-    y: Math.random() * (120 - 105 + 1) + 105,
-    z: 0,
-  };
-  let radius = 1.2;
-  let quat = { x: 0, y: 0, z: 0, w: 1 };
-  let mass = 1;
-
-  //threeJS Section
-  const texture = new THREE.TextureLoader().load(
-    theImages[Math.floor(Math.random() * 5)]
-  );
-
-  let ball = new THREE.Mesh(
-    new THREE.SphereBufferGeometry(radius),
-    new THREE.MeshBasicMaterial({
-      map: texture,
-    })
-  );
-
-  ball.position.set(pos.x, pos.y, pos.z);
-
-  ball.castShadow = true;
-  ball.receiveShadow = true;
-
-  scene.add(ball);
-
-  //Ammojs Section
-  let transform = new Ammo.btTransform();
-  transform.setIdentity();
-  transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-  transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
   let motionState = new Ammo.btDefaultMotionState(transform);
 
   let colShape = new Ammo.btSphereShape(radius);
@@ -437,7 +417,6 @@ function checkIfOutside() {
       rigidBodies[j].geometry.dispose();
       rigidBodies[j].material.dispose();
       scene.remove(rigidBodies[j]);
-      rigidBodies.splice(j, 1);
       ballCount = ballCount - 1;
     }
   }
@@ -445,7 +424,7 @@ function checkIfOutside() {
     "Ball Count: " + ballCount.toString();
 }
 
-function sunLight() {
+function toggleLight() {
   if (ambientLight.intensity != 0) {
     ambientLight.intensity = 0;
     pointerLight.intensity = 1;
@@ -467,16 +446,16 @@ document.getElementById("spawn50Ball").onclick = function () {
 };
 
 document.getElementById("spawnIMGBall").onclick = function () {
-  createIMGBall();
+  createBall("textured");
 };
 document.getElementById("spawn50IMGBall").onclick = function () {
   for (let i = 0; i < 50; i++) {
-    createIMGBall();
+    createBall("textured");
   }
 };
 document.getElementById("checkIfOutside").onclick = function () {
   checkIfOutside();
 };
-document.getElementById("sunLight").onclick = function () {
-  sunLight();
+document.getElementById("toggleLight").onclick = function () {
+  toggleLight();
 };

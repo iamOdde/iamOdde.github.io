@@ -1,70 +1,84 @@
-const canvas = document.getElementById("renderCanvas");
-const engine = new BABYLON.Engine(canvas, true);
+//variable declaration section
+let canvas, engine, scene, camera, himoLight, light, light2;
 
-const scene = new BABYLON.Scene(engine);
-engine.setSize(800, 400);
+const mapWidth = 25,
+  mapLength = 2,
+  mapHeight = 50,
+  EARTH_GRAVITY = -9.807;
 
-engine.runRenderLoop(function () {
-  scene.render();
-});
+const theImages = [
+  "../../imges/boysen/filip.PNG",
+  "../../imges/boysen/oscar.jpeg",
+  "../../imges/boysen/herman.PNG",
+  "../../imges/boysen/matsboge.PNG",
+  "../../imges/boysen/timmy.PNG",
+];
 
-window.addEventListener("resize", function () {
-  engine.resize();
-});
+setupGraphics();
 
-const camera = new BABYLON.ArcRotateCamera(
-  "camera",
-  -Math.PI / 2,
-  Math.PI / 2.5,
-  3,
-  new BABYLON.Vector3(0, 35, -60),
-  scene
-);
-camera.attachControl(canvas, true);
-camera.setTarget(new BABYLON.Vector3(0, 25, 0));
+function setupGraphics() {
+  canvas = document.getElementById("renderCanvas");
+  engine = new BABYLON.Engine(canvas, true);
 
-const himoLight = new BABYLON.HemisphericLight(
-  "light",
-  new BABYLON.Vector3(0, 35, -60),
-  scene
-);
+  scene = new BABYLON.Scene(engine);
+  engine.setSize(800, 400);
 
-const light = new BABYLON.PointLight(
-  "light",
-  new BABYLON.Vector3(0, 35, -80),
-  scene
-);
+  engine.runRenderLoop(function () {
+    scene.render();
+  });
 
-light.setEnabled(false);
+  window.addEventListener("resize", function () {
+    engine.resize();
+  });
 
-// Ljus under
-const light2 = new BABYLON.PointLight(
-  "light2",
-  new BABYLON.Vector3(0, -5, 0),
-  scene
-);
+  camera = new BABYLON.ArcRotateCamera(
+    "camera",
+    -Math.PI / 2,
+    Math.PI / 2.5,
+    3,
+    new BABYLON.Vector3(0, 35, -60),
+    scene
+  );
+  camera.attachControl(canvas, true);
+  camera.setTarget(new BABYLON.Vector3(0, 25, 0));
+
+  himoLight = new BABYLON.HemisphericLight(
+    "light",
+    new BABYLON.Vector3(0, 35, -60),
+    scene
+  );
+
+  light = new BABYLON.PointLight(
+    "light",
+    new BABYLON.Vector3(0, 35, -80),
+    scene
+  );
+
+  light.setEnabled(false);
+
+  // Ljus under
+  light2 = new BABYLON.PointLight(
+    "light2",
+    new BABYLON.Vector3(0, -5, 0),
+    scene
+  );
+}
 
 //Lägger till fysik
 await Ammo();
 scene.enablePhysics(
-  new BABYLON.Vector3(0, -9.81, 0),
+  new BABYLON.Vector3(0, EARTH_GRAVITY, 0),
   new BABYLON.AmmoJSPlugin()
 );
 
-//variable declaration section
-const mapWidth = 25,
-  mapLength = 2,
-  mapHeight = 50;
-
-let theImages = new Array();
-theImages[0] = "../../imges/boysen/filip.PNG";
-theImages[1] = "../../imges/boysen/oscar.jpeg";
-theImages[2] = "../../imges/boysen/herman.PNG";
-theImages[3] = "../../imges/boysen/matsboge.PNG";
-theImages[4] = "../../imges/boysen/timmy.PNG";
-
 //Creating graphics
-var ground = BABYLON.Mesh.CreateGround("ground", mapWidth, mapLength, 1, scene);
+const ground = BABYLON.Mesh.CreateGround(
+  "ground",
+  mapWidth,
+  mapLength,
+  1,
+  scene
+);
 
 const wallBack = BABYLON.MeshBuilder.CreateBox(
   "plane",
@@ -117,7 +131,7 @@ const cylinderColor = new BABYLON.StandardMaterial("cylinderColor");
 cylinderColor.diffuseColor = new BABYLON.Color3.Red();
 const mapHeight2 = mapHeight - 10;
 
-function cylinders(posx, posy) {
+function createCylinder(posx, posy) {
   const cylinder = BABYLON.MeshBuilder.CreateCylinder(
     "cylinder",
     { height: mapLength, width: 1, depth: 1 },
@@ -140,32 +154,32 @@ function cylinders(posx, posy) {
 }
 
 //Cylinders rad 1
-cylinders(0, 5);
+createCylinder(0, 5);
 //Rad 2
-cylinders(2, 8);
-cylinders(-2, 8);
+createCylinder(2, 8);
+createCylinder(-2, 8);
 //Rad 3
-cylinders(0, 11);
-cylinders(-4, 11);
-cylinders(4, 11);
+createCylinder(0, 11);
+createCylinder(-4, 11);
+createCylinder(4, 11);
 //Rad 4
-cylinders(2, 14);
-cylinders(-2, 14);
-cylinders(6, 14);
-cylinders(-6, 14);
+createCylinder(2, 14);
+createCylinder(-2, 14);
+createCylinder(6, 14);
+createCylinder(-6, 14);
 //Rad 5
-cylinders(0, 17);
-cylinders(-4, 17);
-cylinders(4, 17);
-cylinders(8, 17);
-cylinders(-8, 17);
+createCylinder(0, 17);
+createCylinder(-4, 17);
+createCylinder(4, 17);
+createCylinder(8, 17);
+createCylinder(-8, 17);
 //Rad 6
-cylinders(2, 20);
-cylinders(-2, 20);
-cylinders(6, 20);
-cylinders(-6, 20);
-cylinders(10, 20);
-cylinders(-10, 20);
+createCylinder(2, 20);
+createCylinder(-2, 20);
+createCylinder(6, 20);
+createCylinder(-6, 20);
+createCylinder(10, 20);
+createCylinder(-10, 20);
 
 //Rektanglar på botten
 
@@ -267,14 +281,14 @@ botRec3.physicsImpostor = new BABYLON.PhysicsImpostor(
   scene
 );
 
-var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
+const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
   "UI"
 );
 
 // Funktion för att skapa bollar
 
-var createBall = function () {
-  var ball = new BABYLON.MeshBuilder.CreateSphere("sphereCube", {
+const createBall = function () {
+  const ball = new BABYLON.MeshBuilder.CreateSphere("sphereCube", {
     width: 5,
     height: 5,
     depth: 5,
@@ -305,8 +319,8 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 //Gamla math randome Math.random() * 2 - 0.9
-var createBallIMG = function () {
-  var ball = new BABYLON.MeshBuilder.CreateSphere("sphereCube", {
+const createBallIMG = function () {
+  const ball = new BABYLON.MeshBuilder.CreateSphere("sphereCube", {
     width: 5,
     height: 5,
     depth: 5,
@@ -335,7 +349,7 @@ var createBallIMG = function () {
 };
 let ballCount = 1;
 //Ball counter top right
-var text1 = new BABYLON.GUI.TextBlock();
+let text1 = new BABYLON.GUI.TextBlock();
 text1.text = "1 Ball";
 text1.color = "white";
 text1.fontSize = 24;
@@ -343,94 +357,96 @@ text1.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
 text1.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 advancedTexture.addControl(text1);
 
-//Spawn ball knappar
-var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Spawn 1 Ball");
-button1.width = "100px";
-button1.height = "40px";
-button1.color = "black";
-button1.cornerRadius = 5;
-button1.fontSize = 14;
-button1.background = "white";
-button1.left;
-button1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-button1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-button1.onPointerUpObservable.add(function () {
-  //console.log("Boll");
-  createBall();
-});
-advancedTexture.addControl(button1);
-
-var button2 = BABYLON.GUI.Button.CreateSimpleButton("but2", "Spawn 50 Balls");
-button2.width = "100px";
-button2.left = "100px";
-button2.height = "40px";
-button2.color = "black";
-button2.fontSize = 14;
-button2.cornerRadius = 5;
-button2.background = "white";
-button2.left;
-button2.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-button2.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-button2.onPointerUpObservable.add(function () {
-  //console.log("Boll");
-  for (let i = 0; i < 50; i++) {
-    createBall();
+function createButton(
+  text1,
+  leftMargin,
+  rightMargin,
+  horizontalAlignment1,
+  verticalAlignment1,
+  functionName
+) {
+  let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", text1);
+  button1.width = "100px";
+  button1.height = "40px";
+  button1.left = leftMargin;
+  button1.right = rightMargin;
+  button1.color = "black";
+  button1.cornerRadius = 5;
+  button1.fontSize = 14;
+  button1.background = "white";
+  button1.left;
+  button1.horizontalAlignment = horizontalAlignment1;
+  button1.verticalAlignment = verticalAlignment1;
+  if (functionName == "createBall") {
+    button1.onPointerUpObservable.add(function () {
+      //console.log("Boll");
+      createBall();
+    });
+  } else if (functionName == "createBall50") {
+    button1.onPointerUpObservable.add(function () {
+      //console.log("Boll");
+      for (let i = 0; i < 50; i++) {
+        createBall();
+      }
+    });
+  } else if (functionName == "checkIfOutisde") {
+    button1.onPointerUpObservable.add(function () {
+      checkIfOutside();
+    });
+  } else if (functionName == "createIMG") {
+    button1.onPointerUpObservable.add(function () {
+      createBallIMG();
+    });
+  } else if (functionName == "createIMG50") {
+    button1.onPointerUpObservable.add(function () {
+      for (let i = 0; i < 50; i++) {
+        createBallIMG();
+      }
+    });
   }
-});
-advancedTexture.addControl(button2);
+  advancedTexture.addControl(button1);
+}
 
-var button3 = BABYLON.GUI.Button.CreateSimpleButton(
-  "but2",
-  "Delete out of bounds"
+createButton(
+  "Spawn 1 Ball",
+  "0px",
+  "0px",
+  BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT,
+  BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM,
+  "createBall"
 );
-button3.width = "100px";
-button3.right = "10px";
-button3.height = "40px";
-button3.fontSize = 14;
-button3.color = "black";
-button3.cornerRadius = 5;
-button3.background = "white";
-button3.left;
-button3.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-button3.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-button3.onPointerUpObservable.add(function () {
-  checkIfOutside();
-});
-advancedTexture.addControl(button3);
-
-var button4 = BABYLON.GUI.Button.CreateSimpleButton("but4", "Spawn 1 IMG");
-button4.width = "100px";
-button4.left = "-200px";
-button4.height = "40px";
-button4.color = "black";
-button4.fontSize = 14;
-button4.cornerRadius = 5;
-button4.background = "white";
-button4.left;
-button4.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-button4.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-button4.onPointerUpObservable.add(function () {
-  createBallIMG();
-});
-advancedTexture.addControl(button4);
-
-var button5 = BABYLON.GUI.Button.CreateSimpleButton("but5", "Spawn 50 IMG");
-button5.width = "100px";
-button5.left = "-100px";
-button5.height = "40px";
-button5.color = "black";
-button5.fontSize = 14;
-button5.cornerRadius = 5;
-button5.background = "white";
-button5.left;
-button5.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-button5.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-button5.onPointerUpObservable.add(function () {
-  for (let i = 0; i < 50; i++) {
-    createBallIMG();
-  }
-});
-advancedTexture.addControl(button5);
+createButton(
+  "Spawn 50 Balls",
+  "100px",
+  "0px",
+  BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT,
+  BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM,
+  "createBall50"
+);
+createButton(
+  "Delete out of bounds",
+  "0px",
+  "10px",
+  BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT,
+  BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM,
+  "checkIfOutisde"
+);
+createButton(
+  "Spawn 1 IMG",
+  "-200px",
+  "0px",
+  BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT,
+  BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM,
+  "createIMG"
+);
+createButton(
+  "Spawn 50 IMG",
+  "-100px",
+  "0px",
+  BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT,
+  BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM,
+  "createIMG50"
+);
 
 const tick = () => {
   console.log("FPS: ", engine.getFps().toFixed());
@@ -482,12 +498,12 @@ scene.actionManager.registerAction(
   )
 );
 
-var lightSphere0 = BABYLON.Mesh.CreateSphere("Sphere0", 16, 2, scene);
+let lightSphere0 = BABYLON.Mesh.CreateSphere("Sphere0", 16, 2, scene);
 
 lightSphere0.material = new BABYLON.StandardMaterial("green", scene);
 lightSphere0.material.emissiveColor = new BABYLON.Color3(1, 0.9, 0);
 
-var alpha = 0;
+let alpha = 0;
 scene.beforeRender = function () {
   light.position = new BABYLON.Vector3(
     -60 * Math.sin(alpha),
