@@ -20,7 +20,7 @@ let clock = new THREE.Clock();
 const EARTH_GRAVITY = -9.807;
 
 const mapWidth = 60,
-  mapDepth = 4,
+  mapDepth = 5.5,
   mapHeight = 130,
   BODY_RESTITUTION = 0.9;
 
