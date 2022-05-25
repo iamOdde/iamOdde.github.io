@@ -41,6 +41,7 @@
         </ul>
       </nav>
     </div>
+
     <main class="unityGame">
       <div id="unity-container" class="unity-desktop">
         <canvas id="unity-canvas" width="800" height="400"></canvas>
@@ -134,8 +135,8 @@
         config.devicePixelRatio = 1;
         unityShowBanner("WebGL builds are not supported on mobile devices.");
       } else {
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "800px";
+        canvas.style.height = "400px";
       }
       loadingBar.style.display = "block";
 

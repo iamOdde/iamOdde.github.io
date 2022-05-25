@@ -25,11 +25,11 @@ const mapWidth = 60,
   BODY_RESTITUTION = 0.9;
 
 var theImages = [
-  "../../imges/boysen/filip.PNG",
-  "../../imges/boysen/oscar.jpeg",
-  "../../imges/boysen/herman.PNG",
-  "../../imges/boysen/matsboge.PNG",
-  "../../imges/boysen/timmy.PNG",
+  new THREE.TextureLoader().load("../../imges/boysen/filip.PNG"),
+  new THREE.TextureLoader().load("../../imges/boysen/oscar.jpeg"),
+  new THREE.TextureLoader().load("../../imges/boysen/herman.PNG"),
+  new THREE.TextureLoader().load("../../imges/boysen/matsboge.PNG"),
+  new THREE.TextureLoader().load("../../imges/boysen/timmy.PNG"),
 ];
 
 //Ammojs Initialization
@@ -335,14 +335,11 @@ function createBall(whatMesh) {
       })
     );
   } else {
-    const texture = new THREE.TextureLoader().load(
-      theImages[Math.floor(Math.random() * 5)]
-    );
-
+    //theImages[Math.floor(Math.random() * 5)]
     ball = new THREE.Mesh(
       new THREE.SphereBufferGeometry(radius),
       new THREE.MeshBasicMaterial({
-        map: texture,
+        map: theImages[Math.floor(Math.random() * 5)],
       })
     );
   }
