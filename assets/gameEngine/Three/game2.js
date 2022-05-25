@@ -21,7 +21,7 @@ const EARTH_GRAVITY = -9.807;
 
 const mapWidth = 60,
   mapDepth = 4,
-  mapHeight = 100,
+  mapHeight = 130,
   BODY_RESTITUTION = 0.9;
 
 var theImages = [
@@ -317,7 +317,7 @@ function createCylinder(pos = { x: 0, y: 0, z: 0 }) {
 function createBall(whatMesh) {
   let pos = {
     x: Math.random() * (3 - -3 + 1) + -3,
-    y: Math.random() * (88 - 70 + 1) + 70,
+    y: Math.random() * (125 - 110 + 1) + 110,
     z: 0,
   };
   let radius = 1.2;
